@@ -22,16 +22,6 @@ function Home(props) {
         list.push({ name: user.name, email: user.email, position: user.position });
     }
 
-    // Account table state
-    const [state, setState] = React.useState({
-        columns: [
-            { title: 'Name', field: 'name' },
-            { title: 'Email', field: 'email' },
-            { title: 'Position', field: 'position' },
-        ],
-        data: list,
-    });
-
     return (
         <React.Fragment>
             <main>
@@ -46,37 +36,6 @@ function Home(props) {
                         </Typography>
                     </Container>
                 </div>
-                <Container maxWidth="md">
-                    <MaterialTable
-                        title="Users"
-                        columns={state.columns}
-                        data={state.data}
-                        editable={{
-                            onRowDelete: (oldData) =>
-                                new Promise((resolve) => {
-                                    setTimeout(() => {
-                                        resolve();
-
-                                        axios.post('/accountDelete', {
-                                            name: oldData.name,
-                                        })
-                                            .then(function (response) {
-                                                console.log(response.data);
-                                                setState((prevState) => {
-                                                    const data = [...prevState.data];
-                                                    data.splice(data.indexOf(oldData), 1);
-                                                    return { ...prevState, data };
-                                                });
-                                            })
-                                            .catch(function (error) {
-                                                console.log(error);
-                                                alert("Only admins can deactivate accounts");
-                                            });
-                                    }, 600);
-                                }),
-                        }}
-                    />
-                </Container>
             </main>
         </React.Fragment>
     );

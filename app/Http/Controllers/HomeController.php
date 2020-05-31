@@ -28,12 +28,4 @@ class HomeController extends Controller
         $data = DB::select('select * from users where not id = ?', [(int) $user]);
         return view('home')->with('data', json_encode($data));
     }
-
-    public function accountDelete(Request $request)
-    {
-        DB::table('users')
-            ->where('name', $request['name'])
-            ->delete();
-        return response()->json([$request->all()]);
-    }
 }

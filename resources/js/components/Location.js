@@ -64,17 +64,7 @@ function Location(props) {
     const [open, setOpen] = React.useState(false);
 
     const [addBtn, setAddBtn] = React.useState(false);
-    const [editBtn, setEditBtn] = React.useState(true);
-    const [removeBtn, setRemoveBtn] = React.useState(true);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const handleName = event => {
         setName(event.target.value);
@@ -131,106 +121,6 @@ function Location(props) {
         cancel();
     };
 
-    const copy = event => {
-        // copy
-        event.preventDefault();
-        setx_axis(parseFloat(x_axis).toFixed(2));
-        sety_axis(parseFloat(y_axis).toFixed(2));
-
-        var copied = name;
-        copied += "-copy";
-
-        axios
-            .post("/locationSubmit", {
-                name: copied,
-                x_axis: x_axis,
-                y_axis: y_axis,
-                description: description,
-                min_time: minTime
-            })
-            .then(function (response) {
-                // update the list
-                setLocations([
-                    ...locations,
-                    {
-                        id: locations[locations.length - 1].id + 1,
-                        name: copied,
-                        x_axis: x_axis,
-                        y_axis: y_axis,
-                        description: description,
-                        min_time: minTime
-                    }
-                ]);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-        // change buttons' state
-        cancel();
-    };
-
-    const edit = () => {
-        event.preventDefault();
-        setx_axis(parseFloat(x_axis).toFixed(2));
-        sety_axis(parseFloat(y_axis).toFixed(2));
-
-        axios
-            .post("/locationEdit", {
-                id: id,
-                name: name,
-                x_axis: x_axis,
-                y_axis: y_axis,
-                description: description,
-                min_time: minTime
-            })
-            .then(function (response) {
-                // update the list
-                var backup = locations;
-                setLocations(locations.filter(location => location.id != id));
-                for (let location of backup) {
-                    if (location.id == id) {
-                        location.name = name;
-                        location.x_axis = x_axis;
-                        location.y_axis = y_axis;
-                        location.description = description;
-                        location.min_time = minTime;
-                    }
-                }
-                setLocations(backup);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-
-
-
-        // change buttons' state
-        cancel();
-    };
-
-    const remove = () => {
-        event.preventDefault();
-
-        axios
-            .post("/locationRemove", {
-                id: id,
-            })
-            .then(function (response) {
-                // update the list (could use setState and filter)
-                setLocations(locations.filter(location => location.id != id));
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-
-
-        // change buttons' state
-        cancel();
-    };
-
     const cancel = () => {
         setName("");
         setx_axis("");
@@ -241,8 +131,6 @@ function Location(props) {
         setSelectedIndex(0);
 
         setAddBtn(false);
-        setRemoveBtn(true);
-        setEditBtn(true);
     };
 
     const handleListItemClick = (event, i) => {
@@ -259,8 +147,6 @@ function Location(props) {
             }
         }
         setAddBtn(true);
-        setRemoveBtn(false);
-        setEditBtn(false);
     };
 
     const list = [
@@ -416,58 +302,11 @@ function Location(props) {
                     <Button
                         className={classes.submit}
                         variant="outlined"
-                        color="primary"
-                        onClick={edit}
-                        disabled={editBtn}
-                    >
-                        Edit
-                    </Button>
-                    <Button
-                        className={classes.submit}
-                        variant="outlined"
-                        color="primary"
-                        onClick={copy}
-                        disabled={editBtn}
-                    >
-                        Copy
-                    </Button>
-                    <Button
-                        className={classes.submit}
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleClickOpen}
-                        disabled={removeBtn}
-                    >
-                        Remove
-                    </Button>
-                    <Button
-                        className={classes.submit}
-                        variant="outlined"
                         onClick={cancel}
                     >
                         Cancel
                     </Button>
 
-                    <Dialog
-                        open={open}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={handleClose}
-                        aria-labelledby="alert-dialog-slide-title"
-                        aria-describedby="alert-dialog-slide-description"
-                    >
-                        <DialogTitle id="alert-dialog-slide-title">
-                            {"Are you sure to delete the location?"}
-                        </DialogTitle>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="secondary">
-                                Cancel
-                            </Button>
-                            <Button onClick={remove} color="primary">
-                                Yes
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
                     <Divider />
                     <div className={classes.list}>
                         <List component="nav" aria-label="locations">

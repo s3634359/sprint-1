@@ -77,13 +77,6 @@ class TourController extends Controller
         return response()->json([$request->all()]);
     }
 
-    public function getTourItem(Request $request)
-    {
-        $location_list = DB::select('select id, name, min_time from locations');
-        $location = DB::select('select tours_locations.location_id as id, name, min_time, tours_locations.order from locations, tours_locations where tours_locations.tour_id = '. $request->id .' and locations.id = tours_locations.location_id order by tours_locations.order ASC');
-        return view('tour_item')->with('location', json_encode($location))->with('location_list', json_encode($location_list));
-    }
-
     public function tourSubmit(Request $request)
     {
         DB::insert('insert into locations values (NULL, ?, ?, ?, ?, ?, NOW(), NULL)', [$request['name'], $request['x_axis'], $request['y_axis'], $request['description'], $request['min_time']]);

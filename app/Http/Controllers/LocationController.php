@@ -79,25 +79,5 @@ class LocationController extends Controller
         
             return response()->json([$request->all()]);
     }
-
-    public function locationEdit(Request $request)
-    {   
-        $location = Location::find($request['id']);
-        $location->name = $request['name'];
-        $location->x_axis = $request['x_axis'];
-        $location->y_axis = $request['y_axis'];
-        $location->description = $request['description'];
-        $location->min_time = $request['min_time'];
-        $location->save();
-        
-        return response()->json([$request->all()]);
-    }
-
-    public function locationRemove(Request $request)
-    {
-        Location::destroy($request['id']);
-        
-        return response()->json([$request->all()]);
-    }
     
 }

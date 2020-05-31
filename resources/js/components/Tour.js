@@ -67,7 +67,6 @@ function Tour(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [newTour, setNewTour] = React.useState("");
-    const [modalOpen, setModalOpen] = React.useState(false);
     const [tour_id, set_tour_id] = React.useState("");
     const [lastId, setLastId] = React.useState(0);
 
@@ -77,31 +76,6 @@ function Tour(props) {
 
     const handleClose = () => {
         setOpen(false);
-    };
-
-    const handleDelete = event => {
-        axios
-            .post("/deleteTour", {
-                id: tour_id
-            })
-            .then(function(response) {
-                // update the tour list
-                setTours(tours.filter(tour => tour.id != tour_id));
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-
-        modalHandleClose();
-    };
-
-    const modalHandleOpen = event => {
-        set_tour_id(event.currentTarget.value);
-        setModalOpen(true);
-    };
-
-    const modalHandleClose = () => {
-        setModalOpen(false);
     };
 
     const createNewTour = () => {
@@ -120,7 +94,6 @@ function Tour(props) {
                     }
                 ]);
                 setLastId(lastId + 1);
-                window.location.href = "/tour_item?id=" + (lastId + 1);
             })
             .catch(function(error) {
                 console.log(error);
@@ -199,50 +172,8 @@ function Tour(props) {
                                         >
                                             {tour.name} ({tour.min_time} sec.)
                                         </Typography>
-                                        {types.map(type =>
-                                            type.tour_id === tour.id ? (
-                                                <Button
-                                                    variant="contained"
-                                                    className={
-                                                        classes.typeButton
-                                                    }
-                                                >
-                                                    {type.name}
-                                                </Button>
-                                            ) : (
-                                                ""
-                                            )
-                                        )}
                                     </CardContent>
                                     <CardActions>
-                                        <Button
-                                            size="small"
-                                            color="primary"
-                                            onClick={() =>
-                                                (window.location.href =
-                                                    "/tour_item?id=" + tour.id)
-                                            }
-                                        >
-                                            View
-                                        </Button>
-                                        <Button
-                                            size="small"
-                                            color="primary"
-                                            onClick={() =>
-                                                (window.location.href =
-                                                    "/tour_type?id=" + tour.id)
-                                            }
-                                        >
-                                            Type
-                                        </Button>
-                                        <Button
-                                            size="small"
-                                            color="secondary"
-                                            value={tour.id}
-                                            onClick={modalHandleOpen}
-                                        >
-                                            Delete
-                                        </Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -250,26 +181,6 @@ function Tour(props) {
                     </Grid>
                 </Container>
             </main>
-            <Dialog
-                open={modalOpen}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={modalHandleClose}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="alert-dialog-slide-title">
-                    {"Are you sure to delete the tour?"}
-                </DialogTitle>
-                <DialogActions>
-                    <Button onClick={modalHandleClose} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleDelete} color="primary">
-                        Yes
-                    </Button>
-                </DialogActions>
-            </Dialog>
             <Dialog
                 open={open}
                 onClose={handleClose}
